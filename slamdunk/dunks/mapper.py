@@ -18,12 +18,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import print_function
-import os, re
+import os
+import re
 
 from slamdunk.utils.misc import files_exist, checkStep, run, pysamIndex, removeFile, getBinary, replaceExtension, shellerr  # @UnresolvedImport
 from slamdunk.version import __ngm_version__  # @UnresolvedImport
 
 projectPath = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 
 def sort(inputSAM, outputBAM, log, threads=1, keepSam=True, dry=False, verbose=True):
 
@@ -32,9 +34,10 @@ def sort(inputSAM, outputBAM, log, threads=1, keepSam=True, dry=False, verbose=T
     else:
         print("Skipped sorting for " + inputSAM, file=log)
 
+
 def checkNextGenMapVersion():
-    ngmHelp = shellerr("ngm", raiseError = False)
-    matchObj = re.match( r'.*([0-9]+\.[0-9]+\.[0-9]+).*', ngmHelp, re.M|re.I)
+    ngmHelp = shellerr("ngm", raiseError=False)
+    matchObj = re.match(r'.*([0-9]+\.[0-9]+\.[0-9]+).*', ngmHelp, re.M | re.I)
     if matchObj:
         version = matchObj.group(1)
         if version != __ngm_version__:
@@ -42,28 +45,29 @@ def checkNextGenMapVersion():
     else:
         raise RuntimeError('Could not get NextGenMap version. Please reinstall slamdunk package.')
 
+
 def runSam2bam(inFile, outFile, log, index=True, sort=True, delinFile=False, onlyUnique=False, onlyProperPaired=False, filterMQ=0, L=None, threads=1, verbose=False, dry=False):
     if(delinFile and files_exist(outFile) and not files_exist(inFile)):
         print("Skipping sam2bam for " + outFile, file=log)
     else:
         if(onlyUnique and filterMQ == 0):
-            filterMQ = 1;
+            filterMQ = 1
 
         success = True
         cmd = ["samtools view", "-@", str(threads), "-Sb", "-o", outFile, inFile]
         if filterMQ > 0:
-            cmd+=["-q", str(filterMQ)]
+            cmd += ["-q", str(filterMQ)]
         if onlyProperPaired:
-            cmd+=["-f", "2"]
+            cmd += ["-f", "2"]
         if not L is None:
-            cmd+=["-L", L]
+            cmd += ["-L", L]
         run(" ".join(cmd), log, verbose=verbose, dry=dry)
 
         if(sort):
             tmp = outFile + "_tmp"
             if(not dry):
                 os.rename(outFile, tmp)
-            run(" ".join(["samtools sort", "-@", str(threads), "-o",  outFile, tmp]), log, verbose=verbose, dry=dry)
+            run(" ".join(["samtools sort", "-@", str(threads), "-o", outFile, tmp]), log, verbose=verbose, dry=dry)
             if(success):
                 removeFile(tmp)
         if(success and delinFile):
@@ -74,9 +78,9 @@ def runSam2bam(inFile, outFile, log, index=True, sort=True, delinFile=False, onl
         pysamIndex(outFile)
 
 
-def Map(inputBAM, inputReference, outputSAM, log, quantseqMapping, endtoendMapping, threads=1, parameter="--no-progress --slam-seq 2" , outputSuffix="_ngm_slamdunk", trim5p=0, maxPolyA=-1, topn=1, sampleId=None, sampleName="NA", sampleType="NA", sampleTime=0, printOnly=False, verbose=True, force=False):
+def Map(inputBAM1, inputReference, outputSAM, log, quantseqMapping, endtoendMapping, inputBAM2='', threads=1, parameter="--no-progress --slam-seq 2", outputSuffix="_ngm_slamdunk", trim5p=0, maxPolyA=-1, topn=1, sampleId=None, sampleName="NA", sampleType="NA", sampleTime=0, printOnly=False, verbose=True, force=False):
 
-    if(quantseqMapping is True) :
+    if(quantseqMapping is True):
         parameter = "--no-progress"
 
     if(trim5p > 0):
@@ -98,12 +102,13 @@ def Map(inputBAM, inputReference, outputSAM, log, quantseqMapping, endtoendMappi
     if(topn > 1):
         parameter = parameter + " -n " + str(topn) + " --strata "
 
-    if(checkStep([inputReference, inputBAM], [replaceExtension(outputSAM, ".bam")], force)):
+    if(checkStep([inputReference, inputBAM1], [replaceExtension(outputSAM, ".bam")], force)):
+        compute_on = " -q " + inputBAM1 if inputBAM2 == '' else " -1 " + inputBAM1 + " -2 " + inputBAM2
         if outputSAM.endswith(".sam"):
             # Output SAM
-            run("ngm -r " + inputReference + " -q " + inputBAM + " -t " + str(threads) + " " + parameter + " -o " + outputSAM, log, verbose=verbose, dry=printOnly)
+            run("ngm -r " + inputReference + compute_on + " -t " + str(threads) + " " + parameter + " -o " + outputSAM, log, verbose=verbose, dry=printOnly)
         else:
             # Output BAM directly
-            run("ngm -b -r " + inputReference + " -q " + inputBAM + " -t " + str(threads) + " " + parameter + " -o " + outputSAM, log, verbose=verbose, dry=printOnly)
+            run("ngm -b -r " + inputReference + compute_on + " -t " + str(threads) + " " + parameter + " -o " + outputSAM, log, verbose=verbose, dry=printOnly)
     else:
-        print("Skipped mapping for " + inputBAM, file=log)
+        print("Skipped mapping for " + inputBAM1, file=log)
