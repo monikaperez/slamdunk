@@ -250,9 +250,9 @@ def runAll(args):
         if args.sampleIndex > -1:
             tid = args.sampleIndex
         if len(bams) == 2 and (bams[0].endswith(".fastq.gz") or bams[0].endswith(".fasta.gz")):
-            runMap(tid, bams[0], referenceFile, n, args.trim5, args.maxPolyA, args.quantseq, args.endtoend, args.topn, sampleInfo, dunkPath, args.skipSAM, name=args.referenceFile.name, inputBam2=bams[1])
+            runMap(tid, bams[0], referenceFile, n, args.trim5, args.maxPolyA, args.quantseq, args.endtoend, args.topn, sampleInfo, dunkPath, args.skipSAM, name=args.referenceFile, inputBam2=bams[1])
         else:
-            runMap(tid, bams, referenceFile, n, args.trim5, args.maxPolyA, args.quantseq, args.endtoend, args.topn, sampleInfo, dunkPath, args.skipSAM, name=args.referenceFile.name)
+            runMap(tid, bams, referenceFile, n, args.trim5, args.maxPolyA, args.quantseq, args.endtoend, args.topn, sampleInfo, dunkPath, args.skipSAM, name=args.referenceFile)
 
     dunkFinished()
 
@@ -313,10 +313,10 @@ def runAll(args):
     # if (args.minQual == 0) :
     #    snpqual = 13
     # else :
-    snpqual = args.minQual
+    snpqual = args.minQal
 
     message("Running slamDunk SNP for " + str(len(samples)) + " files (" + str(snpThread) + " threads)")
-    results = Parallel(n_jobs=snpThread, verbose=verbose)(delayed(runSnp)(tid, referenceFile, minCov, minVarFreq, snpqual, dunkbufferIn[tid], dunkPath, name=args.referenceFile.name) for tid in range(0, len(samples)))
+    results = Parallel(n_jobs=snpThread, verbose=verbose)(delayed(runSnp)(tid, referenceFile, minCov, minVarFreq, snpqual, dunkbufferIn[tid], dunkPath, name=args.naming) for tid in range(0, len(samples)))
 
     dunkFinished()
 
@@ -402,7 +402,7 @@ def run():
 
     allparser = subparsers.add_parser('all', help='Run entire SLAMdunk analysis')
     allparser.add_argument('files', action='store', help='Single csv/tsv file (recommended) containing all sample files and sample info or a list of all sample BAM/FASTA(gz)/FASTQ(gz) files', nargs="+")
-    allparser.add_argument("-N", "--name", type=str, required=False, dest="referenceFile", default='', help="naming of output files")
+    allparser.add_argument("-N", "--name", type=str, required=False, dest="naming", default='', help="naming of output files")
     allparser.add_argument("-r", "--reference", type=str, required=True, dest="referenceFile", help="Reference fasta file")
     allparser.add_argument("-b", "--bed", type=str, required=True, dest="bed", help="BED file with 3'UTR coordinates")
     allparser.add_argument("-fb", "--filterbed", type=str, required=False, dest="filterbed", help="BED file with 3'UTR coordinates to filter multimappers (activates -m)")
