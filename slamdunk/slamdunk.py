@@ -245,20 +245,20 @@ def runAll(args):
 
     for i in range(0, len(samples)):
         bams = samples[i]
-        sampleInfo = samplesInfos[i]
+        sampleInfoname = samplesInfos[i]
         tid = i
         if args.sampleIndex > -1:
             tid = args.sampleIndex
         if len(bams) == 2 and (bams[0].endswith(".fastq.gz") or bams[0].endswith(".fasta.gz")):
-            runMap(tid, bams[0], referenceFile, n, args.trim5, args.maxPolyA, args.quantseq, args.endtoend, args.topn, sampleInfo, dunkPath, args.skipSAM, name=args.referenceFile, inputBAM2=bams[1])
+            runMap(tid, bams[0], referenceFile, n, args.trim5, args.maxPolyA, args.quantseq, args.endtoend, args.topn, sampleInfo, dunkPath, args.skipSAM, name=args.naming, inputBAM2=bams[1])
         else:
-            runMap(tid, bams, referenceFile, n, args.trim5, args.maxPolyA, args.quantseq, args.endtoend, args.topn, sampleInfo, dunkPath, args.skipSAM, name=args.referenceFile)
+            runMap(tid, bams, referenceFile, n, args.trim5, args.maxPolyA, args.quantseq, args.endtoend, args.topn, sampleInfo, dunkPath, args.skipSAM, name=args.naming)
 
     dunkFinished()
 
     if(not args.skipSAM):
         message("Running slamDunk sam2bam for " + str(len(samples)) + " files (" + str(n) + " threads)")
-        results = Parallel(n_jobs=1, verbose=verbose)(delayed(runSam2Bam)(tid, samples[tid], n, dunkPath, name=args.referenceFile.name) for tid in range(0, len(samples)))
+        results = Parallel(n_jobs=1, verbose=verbose)(delayed(runSam2Bam)(tid, samples[tid], n, dunkPath, name=args.naming) for tid in range(0, len(samples)))
         dunkFinished()
 
     dunkbufferIn = []
@@ -281,7 +281,7 @@ def runAll(args):
     createDir(dunkPath)
 
     message("Running slamDunk filter for " + str(len(samples)) + " files (" + str(n) + " threads)")
-    results = Parallel(n_jobs=n, verbose=verbose)(delayed(runFilter)(tid, dunkbufferIn[tid], bed, args.mq, args.identity, args.nm, dunkPath, name=args.referenceFile.name) for tid in range(0, len(samples)))
+    results = Parallel(n_jobs=n, verbose=verbose)(delayed(runFilter)(tid, dunkbufferIn[tid], bed, args.mq, args.identity, args.nm, dunkPath, name=args.naming) for tid in range(0, len(samples)))
 
     dunkFinished()
 
@@ -328,7 +328,7 @@ def runAll(args):
     snpDirectory = os.path.join(outputDirectory, "snp")
 
     message("Running slamDunk tcount for " + str(len(samples)) + " files (" + str(n) + " threads)")
-    results = Parallel(n_jobs=n, verbose=verbose)(delayed(runCount)(tid, dunkbufferIn[tid], referenceFile, args.bed, args.maxLength, args.minQual, args.conversionThreshold, dunkPath, snpDirectory, name=args.referenceFile.name) for tid in range(0, len(samples)))
+    results = Parallel(n_jobs=n, verbose=verbose)(delayed(runCount)(tid, dunkbufferIn[tid], referenceFile, args.bed, args.maxLength, args.minQual, args.conversionThreshold, dunkPath, snpDirectory, name=args.naming) for tid in range(0, len(samples)))
 
     dunkFinished()
 
