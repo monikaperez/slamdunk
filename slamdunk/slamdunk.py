@@ -252,7 +252,7 @@ def runAll(args):
         if len(bams) == 2 and (bams[0].endswith(".fastq.gz") or bams[0].endswith(".fasta.gz")):
             runMap(tid, bams[0], referenceFile, n, args.trim5, args.maxPolyA, args.quantseq, args.endtoend, args.topn, sampleInfo, dunkPath, args.skipSAM, name=args.referenceFile.name, inputBam2=bams[1])
         else:
-            runMap(tid, bam, referenceFile, n, args.trim5, args.maxPolyA, args.quantseq, args.endtoend, args.topn, sampleInfo, dunkPath, args.skipSAM, name=args.referenceFile.name)
+            runMap(tid, bams, referenceFile, n, args.trim5, args.maxPolyA, args.quantseq, args.endtoend, args.topn, sampleInfo, dunkPath, args.skipSAM, name=args.referenceFile.name)
 
     dunkFinished()
 
