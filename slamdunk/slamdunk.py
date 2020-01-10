@@ -244,7 +244,7 @@ def runAll(args):
     message("Running slamDunk map for " + str(len(samples)) + " files (" + str(n) + " threads)")
 
     for i in range(0, len(samples)):
-        bam = samples[i]
+        bams = samples[i]
         sampleInfo = samplesInfos[i]
         tid = i
         if args.sampleIndex > -1:
@@ -404,7 +404,7 @@ def run():
     allparser.add_argument('files', action='store', help='Single csv/tsv file (recommended) containing all sample files and sample info or a list of all sample BAM/FASTA(gz)/FASTQ(gz) files', nargs="+")
     allparser.add_argument("-N", "--name", type=str, required=False, dest="referenceFile", default='', help="naming of output files")
     allparser.add_argument("-r", "--reference", type=str, required=True, dest="referenceFile", help="Reference fasta file")
-    allparser.add_argument("-b", "--bed", type=str, required=True, dest="bed", help="BED file with 3'UTR coordinates")
+    allparser.add_argument("-b", "--bed", type=str, required=False, dest="bed", help="BED file with 3'UTR coordinates")
     allparser.add_argument("-fb", "--filterbed", type=str, required=False, dest="filterbed", help="BED file with 3'UTR coordinates to filter multimappers (activates -m)")
     allparser.add_argument("-o", "--outputDir", type=str, required=True, dest="outputDir", help="Output directory for slamdunk run.")
     allparser.add_argument("-5", "--trim-5p", type=int, required=False, dest="trim5", default=12, help="Number of bp removed from 5' end of all reads (default: %(default)s)")
