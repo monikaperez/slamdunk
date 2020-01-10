@@ -134,7 +134,7 @@ def getSamples(bams, runOnly=-1):
     return samples, samplesInfos
 
 
-def runMap(tid, inputBAM1, referenceFile, threads, trim5p, maxPolyA, quantseqMapping, endtoendMapping, topn, sampleDescription, outputDirectory, skipSAM, inputBam2='', name=''):
+def runMap(tid, inputBAM1, referenceFile, threads, trim5p, maxPolyA, quantseqMapping, endtoendMapping, topn, sampleDescription, outputDirectory, skipSAM, inputBAM2='', name=''):
     if skipSAM:
         outputSAM = os.path.join(outputDirectory, replaceExtension(basename(inputBAM1) if name == '' else name, ".bam", "_slamdunk_mapped"))
     else:
@@ -250,7 +250,7 @@ def runAll(args):
         if args.sampleIndex > -1:
             tid = args.sampleIndex
         if len(bams) == 2 and (bams[0].endswith(".fastq.gz") or bams[0].endswith(".fasta.gz")):
-            runMap(tid, bams[0], referenceFile, n, args.trim5, args.maxPolyA, args.quantseq, args.endtoend, args.topn, sampleInfo, dunkPath, args.skipSAM, name=args.referenceFile, inputBam2=bams[1])
+            runMap(tid, bams[0], referenceFile, n, args.trim5, args.maxPolyA, args.quantseq, args.endtoend, args.topn, sampleInfo, dunkPath, args.skipSAM, name=args.referenceFile, inputBAM2=bams[1])
         else:
             runMap(tid, bams, referenceFile, n, args.trim5, args.maxPolyA, args.quantseq, args.endtoend, args.topn, sampleInfo, dunkPath, args.skipSAM, name=args.referenceFile)
 
