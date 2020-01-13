@@ -245,7 +245,7 @@ def runAll(args):
 
     for i in range(0, len(samples)):
         bams = samples[i]
-        sampleInfoname = samplesInfos[i]
+        sampleInfo = samplesInfos[i]
         tid = i
         if args.sampleIndex > -1:
             tid = args.sampleIndex
