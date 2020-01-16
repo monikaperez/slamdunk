@@ -240,7 +240,7 @@ def runAll(args):
     createDir(dunkPath)
 
     samples, samplesInfos = getSamples(args.files, runOnly=args.sampleIndex)
-
+    print("Running slamDunk map for " + str(len(samples)) + " files (" + str(n) + " threads)")
     message("Running slamDunk map for " + str(len(samples)) + " files (" + str(n) + " threads)")
 
     for i in range(0, len(samples)):
@@ -342,6 +342,7 @@ def run():
     usage = "SLAMdunk software for analyzing SLAM-seq data"
 
     # Main Parsers
+    print("parsing")
     parser = ArgumentParser(description=usage, formatter_class=ArgumentDefaultsHelpFormatter)
     parser.add_argument('--version', action='version', version='%(prog)s ' + __version__)
 
@@ -498,6 +499,7 @@ def run():
         dunkFinished()
 
     elif (command == "all"):
+        print("doing all")
         runAll(args)
         dunkFinished()
 
