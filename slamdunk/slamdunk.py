@@ -242,17 +242,22 @@ def runAll(args):
     samples, samplesInfos = getSamples(args.files, runOnly=args.sampleIndex)
     print("Running slamDunk map for " + str(len(samples)) + " files (" + str(n) + " threads)")
     message("Running slamDunk map for " + str(len(samples)) + " files (" + str(n) + " threads)")
-
+    if len(samples) == 2 and '_1' in samples[0] and '_2' in samples[1]:
+        print("doing paired end mapping!")
+        sampleInfo = samplesInfos[0]
+        tid = 0
+        if args.sampleIndex > -1:
+            tid = args.sampleIndex
+        runMap(tid, samples[0], referenceFile, n, args.trim5, args.maxPolyA, args.quantseq,
+               args.endtoend, args.topn, sampleInfo, dunkPath, args.skipSAM, name=args.naming,
+               inputBAM2=samples[1])
     for i in range(0, len(samples)):
         bams = samples[i]
         sampleInfo = samplesInfos[i]
         tid = i
         if args.sampleIndex > -1:
             tid = args.sampleIndex
-        if len(bams) == 2 and (bams[0].endswith(".fastq.gz") or bams[0].endswith(".fasta.gz")):
-            runMap(tid, bams[0], referenceFile, n, args.trim5, args.maxPolyA, args.quantseq, args.endtoend, args.topn, sampleInfo, dunkPath, args.skipSAM, name=args.naming, inputBAM2=bams[1])
-        else:
-            runMap(tid, bams, referenceFile, n, args.trim5, args.maxPolyA, args.quantseq, args.endtoend, args.topn, sampleInfo, dunkPath, args.skipSAM, name=args.naming)
+        runMap(tid, bams, referenceFile, n, args.trim5, args.maxPolyA, args.quantseq, args.endtoend, args.topn, sampleInfo, dunkPath, args.skipSAM, name=args.naming)
 
     dunkFinished()
 

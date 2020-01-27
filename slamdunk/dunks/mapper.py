@@ -78,7 +78,10 @@ def runSam2bam(inFile, outFile, log, index=True, sort=True, delinFile=False, onl
         pysamIndex(outFile)
 
 
-def Map(inputBAM1, inputReference, outputSAM, log, quantseqMapping, endtoendMapping, inputBAM2='', threads=1, parameter="--no-progress --slam-seq 2", outputSuffix="_ngm_slamdunk", trim5p=0, maxPolyA=-1, topn=1, sampleId=None, sampleName="NA", sampleType="NA", sampleTime=0, printOnly=False, verbose=True, force=False):
+def Map(inputBAM1, inputReference, outputSAM, log, quantseqMapping, endtoendMapping, inputBAM2='',
+        threads=1, parameter="--no-progress --slam-seq 2", outputSuffix="_ngm_slamdunk", trim5p=0,
+        maxPolyA=-1, topn=1, sampleId=None, sampleName="NA", sampleType="NA", sampleTime=0,
+        printOnly=False, verbose=True, force=False):
 
     if(quantseqMapping is True):
         parameter = "--no-progress"
@@ -104,6 +107,7 @@ def Map(inputBAM1, inputReference, outputSAM, log, quantseqMapping, endtoendMapp
 
     if(checkStep([inputReference, inputBAM1], [replaceExtension(outputSAM, ".bam")], force)):
         compute_on = " -q " + inputBAM1 if inputBAM2 == '' else " -1 " + inputBAM1 + " -2 " + inputBAM2
+        print(compute_on)
         if outputSAM.endswith(".sam"):
             # Output SAM
             run("ngm -r " + inputReference + compute_on + " -t " + str(threads) + " " + parameter + " -o " + outputSAM, log, verbose=verbose, dry=printOnly)

@@ -19,7 +19,8 @@
 
 # Date located in: -
 from __future__ import print_function
-import sys, os
+import sys
+import os
 import pysam
 import subprocess
 import collections
@@ -27,8 +28,9 @@ import csv
 import ast
 import hashlib
 
-ReadStat = collections.namedtuple('ReadStat' , 'SequencedReads MappedReads DedupReads FilteredReads SNPs AnnotationName AnnotationMD5')
-SampleInfo = collections.namedtuple('SampleInfo' , 'ID Name Type Time')
+ReadStat = collections.namedtuple('ReadStat', 'SequencedReads MappedReads DedupReads FilteredReads SNPs AnnotationName AnnotationMD5')
+SampleInfo = collections.namedtuple('SampleInfo', 'ID Name Type Time')
+
 
 class SlamSeqInfo:
 
@@ -50,7 +52,7 @@ class SlamSeqInfo:
         else:
             return "NA"
 
-    def __init__(self, bam = None):
+    def __init__(self, bam=None):
         if bam is None:
             self.SequencedReads = 0
             self.MappedReads = 0
@@ -79,7 +81,8 @@ class SlamSeqInfo:
             self.AnnotationMD5 = self.getFromReadStat(self.ID_AnnotationMD5, DS)
 
     def __repr__(self):
-        return "{" + "'" + self.ID_SequencedRead + "':" + str(self.SequencedReads) + "," + "'" + self.ID_MappedReads + "':" + str(self.MappedReads) + "," + "'" + self.ID_FilteredReads + "':" + str(self.FilteredReads) + "," + "'" + self.ID_MQFilteredReads + "':" + str(self.MQFilteredReads) + "," + "'" + self.ID_IdFilteredReads + "':" + str(self.IdFilteredReads) + "," + "'" + self.ID_NmFilteredReads + "':" + str(self.NmFilteredReads) + "," + "'" + self.ID_MultimapperReads + "':" + str(self.MultimapperReads) + "," + "'" + self.ID_DedupReads + "':" + str(self.DedupReads) + "," + "'" + self.ID_SNPs + "':" + str(self.SNPs) + "," + "'" + self.ID_AnnotationName + "':'" + str(self.AnnotationName) + "'," + "'" + self.ID_AnnotationMD5 + "':'" + str(self.AnnotationMD5) +  "'}"
+        return "{" + "'" + self.ID_SequencedRead + "':" + str(self.SequencedReads) + "," + "'" + self.ID_MappedReads + "':" + str(self.MappedReads) + "," + "'" + self.ID_FilteredReads + "':" + str(self.FilteredReads) + "," + "'" + self.ID_MQFilteredReads + "':" + str(self.MQFilteredReads) + "," + "'" + self.ID_IdFilteredReads + "':" + str(self.IdFilteredReads) + "," + "'" + self.ID_NmFilteredReads + "':" + str(self.NmFilteredReads) + "," + "'" + self.ID_MultimapperReads + "':" + str(self.MultimapperReads) + "," + "'" + self.ID_DedupReads + "':" + str(self.DedupReads) + "," + "'" + self.ID_SNPs + "':" + str(self.SNPs) + "," + "'" + self.ID_AnnotationName + "':'" + str(self.AnnotationName) + "'," + "'" + self.ID_AnnotationMD5 + "':'" + str(self.AnnotationMD5) + "'}"
+
 
 def md5(fname):
     hash_md5 = hashlib.md5()
@@ -88,6 +91,7 @@ def md5(fname):
             hash_md5.update(chunk)
     return hash_md5.hexdigest()
 
+
 def estimateMaxReadLength(bam):
 
     readfile = pysam.AlignmentFile(bam, "rb")
@@ -95,23 +99,27 @@ def estimateMaxReadLength(bam):
     minLength = sys.maxint
     maxLength = 0
 
-    for read in readfile.head(n = 1000) :
+    for read in readfile.head(n=1000):
         minLength = min(minLength, read.query_length + read.get_tag("XA"))
         maxLength = max(maxLength, read.query_length + read.get_tag("XA"))
 
     range = maxLength - minLength
 
-    if (range <= 10) :
+    if (range <= 10):
         return(maxLength + 10)
     else:
         return(-1)
 
-#Replaces the file extension of inFile to with <newExtension> and adds a suffix
-#Example replaceExtension("reads.fq", ".sam", suffix="_namg") => reads_ngm.sam
+# Replaces the file extension of inFile to with <newExtension> and adds a suffix
+# Example replaceExtension("reads.fq", ".sam", suffix="_namg") => reads_ngm.sam
+
+
 def replaceExtension(inFile, newExtension, suffix=""):
     return os.path.splitext(inFile)[0] + suffix + newExtension
 
-#Removes right-most extension from file name
+# Removes right-most extension from file name
+
+
 def removeExtension(inFile):
     name = os.path.splitext(inFile)[0]
     ext = os.path.splitext(inFile)[1]
@@ -119,12 +127,14 @@ def removeExtension(inFile):
         name = os.path.splitext(name)[0]
     return name
 
+
 def getchar():
     print("Waiting for input", file=sys.stderr)
     sys.stdin.readline()
 
+
 def files_exist(files):
-    if (type(files) is list) :
+    if (type(files) is list):
         for f in files:
             if not os.path.exists(f):
                 return False
@@ -134,8 +144,10 @@ def files_exist(files):
     return True
 
 # remove a (list of) file(s) (if it/they exists)
+
+
 def removeFile(files):
-    if (type(files) is list) :
+    if (type(files) is list):
         for f in files:
             if os.path.exists(f):
                 os.remove(f)
@@ -163,11 +175,13 @@ def checkStep(inFiles, outFiles, force=False):
 
     return True
 
+
 def getBinary(name):
 
     projectPath = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
     return os.path.join(projectPath, "contrib", name)
+
 
 def getRNASeqReadSimulator(name):
 
@@ -175,11 +189,13 @@ def getRNASeqReadSimulator(name):
 
     return os.path.join(projectPath, "contrib", "RNASeqReadSimulator", "src", name)
 
+
 def getPlotter(name):
 
     projectPath = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
     return os.path.join(projectPath, "plot", name + ".R")
+
 
 def run(cmd, log=sys.stderr, verbose=False, dry=False):
     if(verbose or dry):
@@ -187,13 +203,16 @@ def run(cmd, log=sys.stderr, verbose=False, dry=False):
 
     if(not dry):
         #ret = os.system(cmd)
+        print("Running: \""+cmd+"\"")
         p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
         lines_iterator = iter(p.stdout.readline, b"")
         for line in lines_iterator:
-            print(line, end="", file=log) # yield line
-        p.wait();
+            print(line, end="", file=log)  # yield line
+        p.wait()
         if(p.returncode != 0):
+            print(p.stderr.readline)
             raise RuntimeError("Error while executing command: \"" + cmd + "\"")
+
 
 def callR(cmd, log=sys.stderr, verbose=False, dry=False):
 
@@ -205,13 +224,15 @@ def callR(cmd, log=sys.stderr, verbose=False, dry=False):
         p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
         lines_iterator = iter(p.stdout.readline, b"")
         for line in lines_iterator:
-            print(line, end="", file=log) # yield line
-        p.wait();
+            print(line, end="", file=log)  # yield line
+        p.wait()
         if(p.returncode != 0):
             raise RuntimeError("Error while executing command: \"" + cmd + "\"")
 
+
 def pysamIndex(outputBam):
     pysam.index(outputBam)  # @UndefinedVariable
+
 
 def countReads(bam):
     bamFile = pysam.AlignmentFile(bam)
@@ -226,6 +247,7 @@ def countReads(bam):
     bamFile.close()
     return mapped, unmapped
 
+
 def getReadGroup(bam):
     bamFile = pysam.AlignmentFile(bam)
     header = bamFile.header
@@ -235,10 +257,12 @@ def getReadGroup(bam):
     else:
         raise RuntimeError("Could not get mapped/unmapped/filtered read counts from BAM file. RG is missing. Please rerun slamdunk filter.")
 
+
 def getSampleInfo(bam):
     sampleInfo = getReadGroup(bam)
     sampleInfos = sampleInfo['SM'].split(":")
-    return SampleInfo(ID = sampleInfo['ID'], Name = sampleInfos[0], Type = sampleInfos[1], Time = sampleInfos[2])
+    return SampleInfo(ID=sampleInfo['ID'], Name=sampleInfos[0], Type=sampleInfos[1], Time=sampleInfos[2])
+
 
 def readSampleNames(sampleNames, bams):
     samples = None
@@ -252,6 +276,7 @@ def readSampleNames(sampleNames, bams):
 
     return samples
 
+
 def getSampleName(fileName, samples):
     if samples == None:
         return removeExtension(fileName)
@@ -261,6 +286,7 @@ def getSampleName(fileName, samples):
                 return samples[key]
 
     return
+
 
 def matchFile(sample, files):
     fileName = None
@@ -273,11 +299,13 @@ def matchFile(sample, files):
 
     return fileName
 
+
 def complement(seq):
-    complement = {'A': 'T', 'C': 'G', 'G': 'C', 'T': 'A', 'N' : 'N'}
+    complement = {'A': 'T', 'C': 'G', 'G': 'C', 'T': 'A', 'N': 'N'}
     bases = list(seq)
     bases = [complement[base] for base in bases]
     return ''.join(bases)
+
 
 def shell(cmd):
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
@@ -286,6 +314,7 @@ def shell(cmd):
         raise RuntimeError("Error while executing command: " + cmd)
     else:
         return p.communicate()[0]
+
 
 def shellerr(cmd, raiseError=True):
     p = subprocess.Popen(cmd, stderr=subprocess.PIPE, shell=True)
