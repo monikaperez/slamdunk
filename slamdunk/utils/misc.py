@@ -203,15 +203,11 @@ def run(cmd, log=sys.stderr, verbose=False, dry=False):
 
     if(not dry):
         #ret = os.system(cmd)
-        print("Running: \""+cmd+"\"")
-        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
-        lines_iterator = iter(p.stdout.readline, b"")
-        for line in lines_iterator:
-            print(line, end="", file=log)  # yield line
-        p.wait()
-        if(p.returncode != 0):
-            print(p.stderr.readline)
-            raise RuntimeError("Error while executing command: \"" + cmd + "\"")
+        print("Running: \"" + cmd + "\"")
+        p = os.system(cmd)
+        if p != 0:
+            raise RuntimeError("Error while executing command (or pressed leave)\
+                : \"" + cmd + "\"")
 
 
 def callR(cmd, log=sys.stderr, verbose=False, dry=False):
