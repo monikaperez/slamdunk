@@ -251,14 +251,16 @@ def runAll(args):
         runMap(tid, samples[0], referenceFile, n, args.trim5, args.maxPolyA, args.quantseq,
                args.endtoend, args.topn, sampleInfo, dunkPath, args.skipSAM, name=args.naming,
                inputBAM2=samples[1])
-    for i in range(0, len(samples)):
-        bams = samples[i]
-        sampleInfo = samplesInfos[i]
-        tid = i
-        if args.sampleIndex > -1:
-            tid = args.sampleIndex
-        runMap(tid, bams, referenceFile, n, args.trim5, args.maxPolyA, args.quantseq, args.endtoend, args.topn, sampleInfo, dunkPath, args.skipSAM, name=args.naming)
-
+    else:
+        if len(samples) > 2 and args.naming:
+            raise ValueError('-N can only exist when doing one sample at a time')
+        for i in range(0, len(samples)):
+            bams = samples[i]
+            sampleInfo = samplesInfos[i]
+            tid = i
+            if args.sampleIndex > -1:
+                tid = args.sampleIndex
+            runMap(tid, bams, referenceFile, n, args.trim5, args.maxPolyA, args.quantseq, args.endtoend, args.topn, sampleInfo, dunkPath, args.skipSAM, name=args.naming)
     dunkFinished()
 
     if(not args.skipSAM):
@@ -269,8 +271,10 @@ def runAll(args):
     dunkbufferIn = []
 
     for file in samples:
-        dunkbufferIn.append(os.path.join(dunkPath, replaceExtension(basename(file), ".bam", "_slamdunk_mapped")))
-
+        if not args.naming:
+            dunkbufferIn.append(os.path.join(dunkPath, replaceExtension(basename(file), ".bam", "_slamdunk_mapped")))
+        else:
+            dunkbufferIn.append(os.path.join(dunkPath, args.naming + "_slamdunk_mapped.bam"))
     # Run filter dunk
 
     bed = args.bed
@@ -295,7 +299,10 @@ def runAll(args):
     dunkbufferOut = []
 
     for file in dunkbufferIn:
-        dunkbufferOut.append(os.path.join(dunkPath, replaceExtension(basename(file), ".bam", "_filtered")))
+        if not args.naming:
+            dunkbufferOut.append(os.path.join(dunkPath, replaceExtension(basename(file), ".bam", "_filtered")))
+        else:
+            dunkbufferOut.append(os.path.join(dunkPath, args.naming + "_filtered.bam"))
 
     dunkbufferIn = dunkbufferOut
 
@@ -387,7 +394,7 @@ def run():
     snpparser.add_argument("-o", "--outputDir", type=str, required=True, dest="outputDir", default=SUPPRESS, help="Output directory for mapped BAM files.")
     snpparser.add_argument("-r", "--reference", required=True, dest="fasta", type=str, default=SUPPRESS, help="Reference fasta file")
     snpparser.add_argument("-c", "--min-coverage", required=False, dest="cov", type=int, help="Minimimum coverage to call variant", default=10)
-    #snpparser.add_argument("-q", "--min-base-qual", type=int, default=13, required=False, dest="minQual", help="Min base quality for T -> C conversions (default: %(default)d)")
+    # snpparser.add_argument("-q", "--min-base-qual", type=int, default=13, required=False, dest="minQual", help="Min base quality for T -> C conversions (default: %(default)d)")
     snpparser.add_argument("-f", "--var-fraction", required=False, dest="var", type=float, help="Minimimum variant fraction to call variant", default=0.8)
     snpparser.add_argument("-t", "--threads", type=int, required=False, default=1, dest="threads", help="Thread number")
 
@@ -485,7 +492,7 @@ def run():
         fasta = args.fasta
         minCov = args.cov
         minVarFreq = args.var
-        #minQual = args.minQual
+        # minQual = args.minQual
         minQual = 15
         n = args.threads
         if(n > 1):
