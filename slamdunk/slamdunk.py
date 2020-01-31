@@ -325,7 +325,7 @@ def runAll(args):
     # if (args.minQual == 0) :
     #    snpqual = 13
     # else :
-    snpqual = args.minQal
+    snpqual = args.minQual
 
     message("Running slamDunk SNP for " + str(len(samples)) + " files (" + str(snpThread) + " threads)")
     results = Parallel(n_jobs=snpThread, verbose=verbose)(delayed(runSnp)(tid, referenceFile, minCov, minVarFreq, snpqual, dunkbufferIn[tid], dunkPath, name=args.naming) for tid in range(0, len(samples)))
