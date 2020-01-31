@@ -251,7 +251,7 @@ def runAll(args):
         runMap(tid, samples[0], referenceFile, n, args.trim5, args.maxPolyA, args.quantseq,
                args.endtoend, args.topn, sampleInfo, dunkPath, args.skipSAM, name=args.naming,
                inputBAM2=samples[1])
-        samples = samples[0]
+        samples = [samples[0]]
     else:
         if len(samples) > 2 and args.naming:
             raise ValueError('-N can only exist when doing one sample at a time')
