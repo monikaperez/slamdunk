@@ -36,7 +36,7 @@ def SNPs(inputBAM, outputSNP, referenceFile, minVarFreq, minCov, minQual, log, p
         if(verbose):
             print(varscanCmd, file=log)
         if(not printOnly):
-            varscan = subprocess.Popen(varscanCmd, shell=True, stdin=mpileup.stdout, stdout=fileSNP, stderr=log)
+            varscan = subprocess.Popen(varscanCmd, shell=True, executable='/bin/bash', stdin=mpileup.stdout, stdout=fileSNP, stderr=log)
             varscan.wait()
 
         fileSNP.close()
