@@ -106,7 +106,7 @@ def estimateMaxReadLength(bam):
     print(maxLength, minLength)
     erange = maxLength - minLength
 
-    if (erange <= 10):
+    if (erange <= 100):
         return(maxLength + 10)
     else:
         return(-1)
