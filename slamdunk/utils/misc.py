@@ -103,9 +103,9 @@ def estimateMaxReadLength(bam):
         minLength = min(minLength, read.query_length + read.get_tag("XA"))
         maxLength = max(maxLength, read.query_length + read.get_tag("XA"))
 
-    range = maxLength - minLength
+    erange = maxLength - minLength
 
-    if (range <= 10):
+    if (erange <= 10):
         return(maxLength + 10)
     else:
         return(-1)
