@@ -102,7 +102,7 @@ def estimateMaxReadLength(bam):
     for read in readfile.head(n=1000):
         minLength = min(minLength, read.query_length + read.get_tag("XA"))
         maxLength = max(maxLength, read.query_length + read.get_tag("XA"))
-
+    prinit(maxLength, minLength)
     erange = maxLength - minLength
 
     if (erange <= 10):
