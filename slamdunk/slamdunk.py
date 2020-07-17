@@ -242,7 +242,7 @@ def runAll(args):
     samples, samplesInfos = getSamples(args.files, runOnly=args.sampleIndex)
     print("Running slamDunk map for " + str(len(samples)) + " files (" + str(n) + " threads)")
     message("Running slamDunk map for " + str(len(samples)) + " files (" + str(n) + " threads)")
-    if len(samples) == 2 and 'R1' in samples[0] and 'R2' in samples[1]:
+    if len(samples) == 2 and ('R1' in samples[0] or '_1' in samples[0]) and ('R2' in samples[1] or '_2' in samples[1]):
         print("doing paired end mapping!")
         sampleInfo = samplesInfos[0]
         tid = 0

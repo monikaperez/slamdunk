@@ -106,7 +106,7 @@ def Map(inputBAM1, inputReference, outputSAM, log, quantseqMapping, endtoendMapp
         parameter = parameter + " -n " + str(topn) + " --strata "
 
     if(checkStep([inputReference, inputBAM1], [replaceExtension(outputSAM, ".bam")], force)):
-        compute_on = " -q " + inputBAM1 if inputBAM2 == '' else " -1 " + inputBAM1 + " -2 " + inputBAM2+ ' --skip-mate-check'
+        compute_on = " -q " + inputBAM1 if inputBAM2 == '' else " -1 " + inputBAM1 + " -2 " + inputBAM2
         print(compute_on)
         if outputSAM.endswith(".sam"):
             # Output SAM
