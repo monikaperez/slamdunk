@@ -134,7 +134,7 @@ def getSamples(bams, runOnly=-1):
     return samples, samplesInfos
 
 
-def runtid, inputBAM1, referenceFile, threads, trim5p, maxPolyA, quantseqMapping, endtoendMapping, topn, sampleDescription, outputDirectory, skipSAM, inputBAM2='', name=''):
+def runMap(tid, inputBAM1, referenceFile, threads, trim5p, maxPolyA, quantseqMapping, endtoendMapping, topn, sampleDescription, outputDirectory, skipSAM, inputBAM2='', name=''):
     if skipSAM:
         outputSAM = os.path.join(outputDirectory, replaceExtension(basename(inputBAM1) if name == '' else name, ".bam", "_slamdunk_mapped"))
     else:
