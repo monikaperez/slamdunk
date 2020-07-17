@@ -134,7 +134,7 @@ def getSamples(bams, runOnly=-1):
     return samples, samplesInfos
 
 
-def runMap(tid, inputBAM1, referenceFile, threads, trim5p, maxPolyA, quantseqMapping, endtoendMapping, topn, sampleDescription, outputDirectory, skipSAM, inputBAM2='', name=''):
+def runtid, inputBAM1, referenceFile, threads, trim5p, maxPolyA, quantseqMapping, endtoendMapping, topn, sampleDescription, outputDirectory, skipSAM, inputBAM2='', name=''):
     if skipSAM:
         outputSAM = os.path.join(outputDirectory, replaceExtension(basename(inputBAM1) if name == '' else name, ".bam", "_slamdunk_mapped"))
     else:
@@ -242,7 +242,7 @@ def runAll(args):
     samples, samplesInfos = getSamples(args.files, runOnly=args.sampleIndex)
     print("Running slamDunk map for " + str(len(samples)) + " files (" + str(n) + " threads)")
     message("Running slamDunk map for " + str(len(samples)) + " files (" + str(n) + " threads)")
-    if len(samples) == 2 and '_1' in samples[0] and '_2' in samples[1]:
+    if len(samples) == 2 and 'R1' in samples[0] and 'R2' in samples[1]:
         print("doing paired end mapping!")
         sampleInfo = samplesInfos[0]
         tid = 0
@@ -416,7 +416,8 @@ def run():
 
     allparser = subparsers.add_parser('all', help='Run entire SLAMdunk analysis')
     allparser.add_argument('files', action='store', help='Single csv/tsv file (recommended) containing all sample files and sample info or a list of all sample BAM/FASTA(gz)/FASTQ(gz) files', nargs="+")
-    allparser.add_argument("-N", "--name", type=str, required=False, dest="naming", default='', help="naming of output files")
+    allparser.add_argument("-r", "--reference", type=str, required=True, dest="referenceFile", help="Reference fasta file")
+    allparser.add_argument("-p", "--pairedend", type=bool, required=False, dest="paired", default=False, help="whether we are paired end seq or not")
     allparser.add_argument("-r", "--reference", type=str, required=True, dest="referenceFile", help="Reference fasta file")
     allparser.add_argument("-b", "--bed", type=str, required=True, dest="bed", help="BED file with 3'UTR coordinates")
     allparser.add_argument("-fb", "--filterbed", type=str, required=False, dest="filterbed", help="BED file with 3'UTR coordinates to filter multimappers (activates -m)")
