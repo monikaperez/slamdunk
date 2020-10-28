@@ -160,6 +160,7 @@ def runMap(tid, inputBAM1, referenceFile, threads, trim5p, maxPolyA, quantseqMap
     mapper.Map(inputBAM1, referenceFile, outputSAM, getLogFile(outputLOG), quantseqMapping, endtoendMapping, inputBAM2=inputBAM2, threads=threads, trim5p=trim5p,
                maxPolyA=maxPolyA, topn=topn, sampleId=tid, sampleName=sampleName, sampleType=sampleType, sampleTime=sampleTime, printOnly=printOnly, verbose=verbose)
     stepFinished()
+    
 
 
 def runSam2Bam(tid, bam, threads, outputDirectory, name=''):
@@ -446,7 +447,7 @@ def run():
     ########################################################################
 
     command = args.command
-
+    
     if (command == "map"):
         mapper.checkNextGenMapVersion()
 
@@ -463,14 +464,30 @@ def run():
 
         samples, samplesInfos = getSamples(args.files, runOnly=args.sampleIndex)
 
+        print("Running slamDunk map for " + str(len(samples)) + " files (" + str(n) + " threads)")
         message("Running slamDunk map for " + str(len(samples)) + " files (" + str(n) + " threads)")
-        for i in range(0, len(samples)):
-            bam = samples[i]
-            sampleInfo = samplesInfos[i]
-            tid = i
+        if len(samples) == 2 and ('R1' in samples[0] or '_1' in samples[0]) and ('R2' in samples[1] or '_2' in samples[1]):
+            print("doing paired end mapping!")
+            sampleInfo = samplesInfos[0]
+            tid = 0
             if args.sampleIndex > -1:
                 tid = args.sampleIndex
-            runMap(tid, bam, referenceFile, n, args.trim5, args.maxPolyA, args.quantseq, args.endtoend, args.topn, sampleInfo, outputDirectory, args.skipSAM)
+            runMap(tid, samples[0], referenceFile, n, args.trim5, args.maxPolyA, args.quantseq,
+                args.endtoend, args.topn, sampleInfo, dunkPath, args.skipSAM, name=args.naming,
+                inputBAM2=samples[1])
+            samples = [samples[0]]
+        else:
+            if len(samples) > 2 and args.naming:
+                raise ValueError(
+                    '-N can only exist when doing one sample at a time')
+            for i in range(0, len(samples)):
+                bams = samples[i]
+                sampleInfo = samplesInfos[i]
+                tid = i
+                if args.sampleIndex > -1:
+                    tid = args.sampleIndex
+                runMap(tid, bams, referenceFile, n, args.trim5, args.maxPolyA, args.quantseq,
+                    args.endtoend, args.topn, sampleInfo, dunkPath, args.skipSAM, name=args.naming)
 
         dunkFinished()
 
