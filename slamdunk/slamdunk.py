@@ -356,7 +356,7 @@ def run():
     usage = "SLAMdunk software for analyzing SLAM-seq data"
 
     # Main Parsers
-    print("parsing")
+    print("parsing jkobject")
     parser = ArgumentParser(description=usage, formatter_class=ArgumentDefaultsHelpFormatter)
     parser.add_argument('--version', action='version', version='%(prog)s ' + __version__)
 
