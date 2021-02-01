@@ -449,7 +449,7 @@ def run():
     command = args.command
     
     if (command == "map"):
-
+        
         outputDirectory = args.outputDir
 
         if args.sampleIndex > -1:
@@ -472,7 +472,7 @@ def run():
             if args.sampleIndex > -1:
                 tid = args.sampleIndex
             runMap(tid, samples[0], referenceFile, n, args.trim5, args.maxPolyA, args.quantseq,
-                args.endtoend, args.topn, sampleInfo, dunkPath, args.skipSAM, name=args.naming,
+                   args.endtoend, args.topn, sampleInfo, outputDirectory, args.skipSAM, name=args.naming,
                 inputBAM2=samples[1])
             samples = [samples[0]]
         else:
@@ -486,7 +486,7 @@ def run():
                 if args.sampleIndex > -1:
                     tid = args.sampleIndex
                 runMap(tid, bams, referenceFile, n, args.trim5, args.maxPolyA, args.quantseq,
-                    args.endtoend, args.topn, sampleInfo, dunkPath, args.skipSAM, name=args.naming)
+                    args.endtoend, args.topn, sampleInfo, outputDirectory, args.skipSAM, name=args.naming)
 
         dunkFinished()
 
