@@ -449,7 +449,6 @@ def run():
     command = args.command
     
     if (command == "map"):
-        mapper.checkNextGenMapVersion()
 
         outputDirectory = args.outputDir
 
