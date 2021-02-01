@@ -367,6 +367,8 @@ def run():
 
     mapparser = subparsers.add_parser('map', help='Map SLAM-seq read data', formatter_class=ArgumentDefaultsHelpFormatter)
     mapparser.add_argument('files', action='store', help='Single csv/tsv file (recommended) containing all sample files and sample info or a list of all sample BAM/FASTA(gz)/FASTQ(gz) files', nargs="+")
+    mapparser.add_argument("-N", "--naming", type=str, required=False, dest="naming",
+                           default="sample", help="the name of the file (when we are paired end)")
     mapparser.add_argument("-r", "--reference", type=str, required=True, dest="referenceFile", default=SUPPRESS, help="Reference fasta file")
     mapparser.add_argument("-o", "--outputDir", type=str, required=True, dest="outputDir", default=SUPPRESS, help="Output directory for mapped BAM files.")
     mapparser.add_argument("-5", "--trim-5p", type=int, required=False, dest="trim5", default=12, help="Number of bp removed from 5' end of all reads.")
