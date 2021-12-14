@@ -243,6 +243,8 @@ def runAll(args):
     samples, samplesInfos = getSamples(args.files, runOnly=args.sampleIndex)
     print("Running slamDunk map for " + str(len(samples)) + " files (" + str(n) + " threads)")
     message("Running slamDunk map for " + str(len(samples)) + " files (" + str(n) + " threads)")
+
+    # edited for paired end mapping
     if len(samples) == 2 and ('R1' in samples[0] or '_1' in samples[0]) and ('R2' in samples[1] or '_2' in samples[1]):
         print("doing paired end mapping!")
         sampleInfo = samplesInfos[0]
@@ -286,6 +288,7 @@ def runAll(args):
         args.multimap = True
 
     if (not args.multimap):
+        message("Running slamdunk filter without multimapping reconciliation")
         bed = None
 
     dunkPath = os.path.join(outputDirectory, "filter")
@@ -421,8 +424,8 @@ def run():
     allparser.add_argument('files', action='store', help='Single csv/tsv file (recommended) containing all sample files and sample info or a list of all sample BAM/FASTA(gz)/FASTQ(gz) files', nargs="+")
     allparser.add_argument("-r", "--reference", type=str, required=True, dest="referenceFile", help="Reference fasta file")
     allparser.add_argument("-N", "--naming", type=str, required=False, dest="naming", default="sample", help="the name of the file (when we are paired end)")
-    allparser.add_argument("-b", "--bed", type=str, required=True, dest="bed", help="BED file with 3'UTR coordinates")
-    allparser.add_argument("-fb", "--filterbed", type=str, required=False, dest="filterbed", help="BED file with 3'UTR coordinates to filter multimappers (activates -m)")
+    allparser.add_argument("-b", "--bed", type=str, required=True, dest="bed", help="BED file with 3'UTR coordinates to calculate counts and filter multimappers")
+    allparser.add_argument("-fb", "--filterbed", type=str, required=False, dest="filterbed", help="BED file with 3'UTR coordinates to filter multimappers")
     allparser.add_argument("-o", "--outputDir", type=str, required=True, dest="outputDir", help="Output directory for slamdunk run.")
     allparser.add_argument("-5", "--trim-5p", type=int, required=False, dest="trim5", default=12, help="Number of bp removed from 5' end of all reads (default: %(default)s)")
     allparser.add_argument("-a", "--max-polya", type=int, required=False, dest="maxPolyA", default=4, help="Max number of As at the 3' end of a read (default: %(default)s)")
@@ -430,7 +433,7 @@ def run():
     allparser.add_argument("-t", "--threads", type=int, required=False, default=1, dest="threads", help="Thread number (default: %(default)s)")
     allparser.add_argument("-q", "--quantseq", dest="quantseq", action='store_true', required=False, help="Run plain Quantseq alignment without SLAM-seq scoring")
     allparser.add_argument('-e', "--endtoend", action='store_true', dest="endtoend", help="Use a end to end alignment algorithm for mapping.")
-    allparser.add_argument('-m', "--multimap", action='store_true', dest="multimap", help="Use reference to resolve multimappers (requires -n > 1).")
+    allparser.add_argument('-m', "--multimap", dest="multimap", required=False, default=True, help="Activate or disable multimapper reconciliation. Uses reference to resolve multimappers (default: %(default)s).")
     allparser.add_argument("-mq", "--min-mq", type=int, required=False, default=2, dest="mq", help="Minimum mapping quality (default: %(default)s)")
     allparser.add_argument("-mi", "--min-identity", type=float, required=False, default=0.95, dest="identity", help="Minimum alignment identity (default: %(default)s)")
     allparser.add_argument("-nm", "--max-nm", type=int, required=False, default=-1, dest="nm", help="Maximum NM for alignments (default: %(default)s)")
@@ -459,6 +462,8 @@ def run():
             message("Waiting " + str(sec) + " seconds")
             sleep(sec)
 
+        # Setup slamdunk map folder
+        
         createDir(outputDirectory)
         n = args.threads
         referenceFile = args.referenceFile
@@ -467,14 +472,16 @@ def run():
 
         print("Running slamDunk map for " + str(len(samples)) + " files (" + str(n) + " threads)")
         message("Running slamDunk map for " + str(len(samples)) + " files (" + str(n) + " threads)")
+
+        # edited for paired end mapping
         if len(samples) == 2 and ('R1' in samples[0] or '_1' in samples[0]) and ('R2' in samples[1] or '_2' in samples[1]):
-            print("doing paired end mapping!")
+            print("Doing paired end mapping!")
             sampleInfo = samplesInfos[0]
             tid = 0
             if args.sampleIndex > -1:
                 tid = args.sampleIndex
             runMap(tid, samples[0], referenceFile, n, args.trim5, args.maxPolyA, args.quantseq,
-                   args.endtoend, args.topn, sampleInfo, outputDirectory, args.skipSAM, name=args.naming,
+                   args.endtoend, args.topn, sampleInfo, outputDirectory, args.skipSAM, name=args.naming, 
                 inputBAM2=samples[1])
             samples = [samples[0]]
         else:

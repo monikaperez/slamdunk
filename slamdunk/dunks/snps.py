@@ -34,11 +34,12 @@ def SNPs(inputBAM, outputSNP, referenceFile, minVarFreq, minCov, minQual, log, p
             mpileup = subprocess.Popen(mpileupCmd, shell=True, stdout=subprocess.PIPE, stderr=log)
 
         varscanCmd = "varscan mpileup2snp  --strand-filter 0 --output-vcf --min-var-freq " + str(minVarFreq) + " --min-coverage " + str(minCov) + " --variants 1"
-        print('you need to have installed varscan and exported it in your bashrc like so:"alias varscan=`java -jar PATH/TO/VARSCAN`"')
+        #print('you need to have installed varscan and exported it in your bashrc like so:"alias varscan=`java -jar PATH/TO/VARSCAN`"')
         if(verbose):
             print(varscanCmd, file=log)
         if(not printOnly):
-            varscan = subprocess.Popen('/bin/bash -i -c "' + varscanCmd + '"', shell=True, executable='/bin/bash', stdin=mpileup.stdout, stdout=fileSNP, stderr=log)
+            #varscan = subprocess.Popen('/bin/bash -i -c "' + varscanCmd + '"', shell=True, executable='/bin/bash', stdin=mpileup.stdout, stdout=fileSNP, stderr=log)
+            varscan = subprocess.Popen(varscanCmd, shell=True, stdin=mpileup.stdout, stdout=fileSNP, stderr=log)
             varscan.wait()
 
         fileSNP.close()
