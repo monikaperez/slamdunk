@@ -25,11 +25,10 @@ See some additional tips and advices about running slamdunk in our issue report 
 
 http://t-neumann.github.io/slamdunk
 
-### Please cite
+### citation:
 
-Neumann, T., Herzog, V. A., Muhar, M., Haeseler, von, A., Zuber, J., Ameres, S. L., & Rescheneder, P. (2019). [Quantification of experimentally induced nucleotide conversions in high-throughput sequencing datasets](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2849-7). BMC Bioinformatics, 20(1), 258. http://doi.org/10.1186/s12859-019-2849-7
+please cite the initial paper from t-neuman: [Quantification of experimentally induced nucleotide conversions in high-throughput sequencing datasets](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2849-7) and our own paper on the topic [A distinct core regulatory module enforces oncogene expression in KMT2A-rearranged leukemia](https://www.biorxiv.org/content/10.1101/2021.08.03.454902v1.abstract)
 
 Updated by:
-
 - Jeremie Kalfon @jkobject
 - Monika Perez
