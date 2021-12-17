@@ -1,12 +1,14 @@
 ## jkobject/slamdunk
 
-A spike-in enabled and paired-end sequencing compliant version of slamdunk. Use it to solve
+A spike-in enabled and paired-end sequencing compliant version of slamdunk.
 
 ## Installation
 
 `pip install git+https://github.com/jkobject/slamdunk`
 
 ! Make sure that you have installed [ngm](https://github.com/Cibiv/NextGenMap/wiki) too.
+
+! if you have paired end reads or use hg38, please read the remarks bellow.
 
 ## Remark
 
