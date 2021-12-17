@@ -27,7 +27,7 @@ http://t-neumann.github.io/slamdunk
 
 ### citation:
 
-please cite the initial paper from t-neuman: [Quantification of experimentally induced nucleotide conversions in high-throughput sequencing datasets](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2849-7) and our own paper on the topic [A distinct core regulatory module enforces oncogene expression in KMT2A-rearranged leukemia](https://www.biorxiv.org/content/10.1101/2021.08.03.454902v1.abstract)
+please cite both the initial paper from t-neuman: [Quantification of experimentally induced nucleotide conversions in high-throughput sequencing datasets](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2849-7) and our own paper on the topic [A distinct core regulatory module enforces oncogene expression in KMT2A-rearranged leukemia](https://www.biorxiv.org/content/10.1101/2021.08.03.454902v1.abstract)
 
 Updated by:
 - Jeremie Kalfon @jkobject
